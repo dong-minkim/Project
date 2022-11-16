@@ -1,4 +1,4 @@
-package com.dutmdcjf.authserver.exception;
+package com.dutmdcjf.authserver.exception.util;
 
 public enum ErrorCode {
     LOGIN_BAD_REQUEST(401, null, "PLEASE LOGIN AGAIN"),
