@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @RestController
@@ -29,5 +30,10 @@ public class UserController {
             throw new Exception();
         }
         return userService.refresh(authToken);
+    }
+
+    @PostMapping(value = "/logout")
+    public void logout(HttpServletRequest request) {
+        userService.logout(request);
     }
 }

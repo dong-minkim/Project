@@ -4,6 +4,8 @@ import com.dutmdcjf.authserver.common.StringDefiner;
 import com.dutmdcjf.authserver.dto.mapper.UserMapper;
 import com.dutmdcjf.authserver.jwt.AuthToken;
 import com.dutmdcjf.authserver.jwt.JwtProvider;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @Service
@@ -44,9 +47,9 @@ public class UserService {
         String accessToken = jwtProvider.createToken(userId, accessTokenExp);
         String refreshToken = jwtProvider.createToken(userId, refreshTokenExp);
 
-        String redisId = StringDefiner.REDIS_ID_PREFIX + userId;
+        String redisKey = StringDefiner.REDIS_ID_PREFIX + userId;
         String redisAuthToken = objectMapper.writeValueAsString(new AuthToken(accessToken, refreshToken));
-        redisService.setValues(redisId, redisAuthToken, redisExp);
+        redisService.setValues(redisKey, redisAuthToken, redisExp);
 
         return new AuthToken(accessToken, refreshToken);
     }
@@ -63,8 +66,8 @@ public class UserService {
             }
 
             String userId = jwtProvider.getUserId(authToken.getRefreshToken());
-            String redisId = StringDefiner.REDIS_ID_PREFIX + userId;
-            String redisAuthToken = String.valueOf(redisService.getValues(redisId));
+            String redisKey = StringDefiner.REDIS_ID_PREFIX + userId;
+            String redisAuthToken = String.valueOf(redisService.getValues(redisKey));
 
             if (redisAuthToken == null) {
                 throw new Exception();
@@ -79,12 +82,33 @@ public class UserService {
 
             newAccessToken = jwtProvider.createToken(userId, accessTokenExp);
             String newRedisAuthToken = objectMapper.writeValueAsString(new AuthToken(newAccessToken, authToken.getRefreshToken()));
-            redisService.setValues(redisId, newRedisAuthToken, redisExp);
+            redisService.setValues(redisKey, newRedisAuthToken, redisExp);
 
         } catch (ExpiredJwtException e) {
             log.warn(e.getMessage());
         }
 
         return new AuthToken(newAccessToken, null);
+    }
+
+    /*
+     * HTTP Header로 refreshToken을 받는다.
+     * */
+    public void logout(HttpServletRequest request) {
+        String refreshToken = jwtProvider.getHeaderToken(request);
+        try {
+            if (refreshToken != null) {
+                String userId = jwtProvider.getUserId(refreshToken);
+                String redisKey = StringDefiner.REDIS_ID_PREFIX + userId;
+
+                String redisAuthToken = String.valueOf(redisService.getValues(redisKey));
+                AuthToken authTokenInRedis = objectMapper.readValue(redisAuthToken, AuthToken.class);
+                if (authTokenInRedis.getRefreshToken().equals(refreshToken)) {
+                    redisService.delValues(redisKey);
+                }
+            }
+        } catch (Exception e) {
+            log.warn("", e);
+        }
     }
 }
