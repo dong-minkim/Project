@@ -2,6 +2,8 @@ package com.dutmdcjf.authserver.service;
 
 import com.dutmdcjf.authserver.common.StringDefiner;
 import com.dutmdcjf.authserver.dto.mapper.UserMapper;
+import com.dutmdcjf.authserver.exception.UserLoginException;
+import com.dutmdcjf.authserver.exception.util.ErrorCode;
 import com.dutmdcjf.authserver.jwt.AuthToken;
 import com.dutmdcjf.authserver.jwt.JwtProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -40,7 +42,7 @@ public class UserService {
         Map<String, Object> userSignInData;
         userSignInData = userMapper.getUserBySignIn(email, password);
         if (userSignInData == null) {
-            throw new Exception();
+            throw new UserLoginException(ErrorCode.NOT_FOUND_USER);
         }
 
         String userId = String.valueOf(userSignInData.get("idx"));
@@ -68,24 +70,32 @@ public class UserService {
             String userId = jwtProvider.getUserId(authToken.getRefreshToken());
             String redisKey = StringDefiner.REDIS_ID_PREFIX + userId;
             String redisAuthToken = String.valueOf(redisService.getValues(redisKey));
+            System.out.println(redisAuthToken);
 
             if (redisAuthToken == null) {
-                throw new Exception();
+                throw new UserLoginException(ErrorCode.JWT_EXPIRED);
             }
 
             String redisRefreshToken = objectMapper.readValue(redisAuthToken, AuthToken.class).getRefreshToken();
 
             if (!redisRefreshToken.equals(authToken.getRefreshToken())) {
                 log.info("refreshToken이 다르므로, 재발급하지 않고 거절 응답");
-                throw new Exception();
+                throw new UserLoginException(ErrorCode.DO_NOT_MATCHING_TOKEN);
             }
 
             newAccessToken = jwtProvider.createToken(userId, accessTokenExp);
             String newRedisAuthToken = objectMapper.writeValueAsString(new AuthToken(newAccessToken, authToken.getRefreshToken()));
             redisService.setValues(redisKey, newRedisAuthToken, redisExp);
 
-        } catch (ExpiredJwtException e) {
+        } catch (ExpiredJwtException | NullPointerException e) {
             log.warn(e.getMessage());
+            throw new UserLoginException(ErrorCode.JWT_EXPIRED);
+        } catch (UserLoginException e) {
+            System.out.println("테스트 4");
+            throw e;
+        } catch (Exception e) {
+            System.out.println("테스트 5");
+            throw e;
         }
 
         return new AuthToken(newAccessToken, null);
