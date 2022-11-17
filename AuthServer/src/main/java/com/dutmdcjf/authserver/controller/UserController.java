@@ -16,12 +16,12 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping(value = "/signIn", produces = MediaType.APPLICATION_JSON_VALUE)
-    public AuthToken signIn(@RequestBody User user) throws Exception {
+    @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
+    public AuthToken login(@RequestBody User user) throws Exception {
         if (user == null || user.getEmail() == null || user.getPassword() == null) {
             throw new Exception();
         }
-        return userService.userSignIn(user.getEmail(), user.getPassword());
+        return userService.userLogin(user.getEmail(), user.getPassword());
     }
 
     @PostMapping(value = "/refresh", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -38,14 +38,14 @@ public class UserService {
     /*
      * SingIn
      * */
-    public AuthToken userSignIn(String email, String password) throws Exception {
-        Map<String, Object> userSignInData;
-        userSignInData = userMapper.getUserBySignIn(email, password);
-        if (userSignInData == null) {
+    public AuthToken userLogin(String email, String password) throws Exception {
+        Map<String, Object> userLoginData;
+        userLoginData = userMapper.getUserByLoginData(email, password);
+        if (userLoginData == null) {
             throw new UserLoginException(ErrorCode.NOT_FOUND_USER);
         }
 
-        String userId = String.valueOf(userSignInData.get("idx"));
+        String userId = String.valueOf(userLoginData.get("idx"));
         String accessToken = jwtProvider.createToken(userId, accessTokenExp);
         String refreshToken = jwtProvider.createToken(userId, refreshTokenExp);
 
