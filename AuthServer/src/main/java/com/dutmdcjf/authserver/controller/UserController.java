@@ -20,10 +20,10 @@ public class UserController {
 
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public AuthToken login(@RequestBody User user) throws Exception {
-        if (user == null || user.getEmail() == null || user.getPassword() == null) {
+        if (user == null || user.getUsername() == null || user.getPassword() == null) {
             throw new UserLoginException(ErrorCode.LOGIN_BAD_REQUEST);
         }
-        return userService.userLogin(user.getEmail(), user.getPassword());
+        return userService.userLogin(user.getUsername(), user.getPassword());
     }
 
     @PostMapping(value = "/refresh", produces = MediaType.APPLICATION_JSON_VALUE)

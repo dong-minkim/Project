@@ -38,9 +38,9 @@ public class UserService {
     /*
      * SingIn
      * */
-    public AuthToken userLogin(String email, String password) throws Exception {
+    public AuthToken userLogin(String username, String password) throws Exception {
         Map<String, Object> userLoginData;
-        userLoginData = userMapper.getUserByLoginData(email, password);
+        userLoginData = userMapper.getUserByLoginData(username, password);
         if (userLoginData == null) {
             throw new UserLoginException(ErrorCode.NOT_FOUND_USER);
         }

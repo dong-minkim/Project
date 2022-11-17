@@ -10,7 +10,7 @@ import java.util.Map;
 @Repository
 @Mapper
 public interface UserMapper {
-    Map<String, Object> getUserByLoginData(@Param("email") String email, @Param("password") String password);
+    Map<String, Object> getUserByLoginData(@Param("username") String username, @Param("password") String password);
 
     User getUserById(@Param("idx") String id);
 }

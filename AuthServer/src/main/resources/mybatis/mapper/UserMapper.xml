@@ -3,7 +3,7 @@
 <mapper namespace="com.dutmdcjf.authserver.dto.mapper.UserMapper">
     <select id="getUserByLoginData" parameterType="String" resultType="HashMap">
         SELECT * FROM user
-        WHERE email = #{email} and password = #{password}
+        WHERE username = #{username} and password = #{password}
     </select>
 
     <select id="getUserById" parameterType="String" resultType="User">
