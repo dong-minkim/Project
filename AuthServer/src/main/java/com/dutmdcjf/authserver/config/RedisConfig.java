@@ -1,4 +1,4 @@
-package com.dutmdcjf.authserver.common.config;
+package com.dutmdcjf.authserver.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
