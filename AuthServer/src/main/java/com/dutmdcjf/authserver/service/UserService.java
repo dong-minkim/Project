@@ -17,11 +17,8 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.Base64;
 import java.util.Map;
 
 @Service
@@ -42,7 +39,7 @@ public class UserService {
 
 
     /*
-     * SingIn
+     * Login
      * */
     public AuthToken userLogin(String username, String password) throws Exception {
         Map<String, Object> userLoginData;
@@ -62,8 +59,7 @@ public class UserService {
         return new AuthToken(accessToken, refreshToken);
     }
 
-    public String encryptBySha256(String password) throws NoSuchAlgorithmException {
-
+    private String encryptBySha256(String password) throws NoSuchAlgorithmException {
 
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         md.update(password.getBytes());
@@ -118,6 +114,7 @@ public class UserService {
     }
 
     /*
+     * logout
      * HTTP Header로 refreshToken을 받는다.
      * */
     public void logout(HttpServletRequest request) {
