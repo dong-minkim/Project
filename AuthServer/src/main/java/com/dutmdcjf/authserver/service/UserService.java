@@ -16,6 +16,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.Map;
 
 @Service
@@ -40,7 +46,7 @@ public class UserService {
      * */
     public AuthToken userLogin(String username, String password) throws Exception {
         Map<String, Object> userLoginData;
-        userLoginData = userMapper.getUserByLoginData(username, password);
+        userLoginData = userMapper.getUserByLoginData(username, encryptBySha256(password));
         if (userLoginData == null) {
             throw new UserLoginException(ErrorCode.NOT_FOUND_USER);
         }
@@ -54,6 +60,16 @@ public class UserService {
         redisService.setValues(redisKey, redisAuthToken, redisExp);
 
         return new AuthToken(accessToken, refreshToken);
+    }
+
+    public String encryptBySha256(String password) throws NoSuchAlgorithmException {
+
+
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        md.update(password.getBytes());
+        String encryptPassword = String.format("%064x", new BigInteger(1, md.digest()));
+
+        return encryptPassword;
     }
 
     /*
