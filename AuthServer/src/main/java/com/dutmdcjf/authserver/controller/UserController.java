@@ -8,6 +8,7 @@ import com.dutmdcjf.authserver.service.UserService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +21,6 @@ public class UserController {
 
     private final UserService userService;
 
-
     @ApiOperation(value = "로그인, 토큰 발급", response = AuthToken.class)
     @ApiResponses(value = {
             @ApiResponse(code = 401, message = "로그인 입력 정보가 잘못되었다"),
@@ -29,13 +29,11 @@ public class UserController {
     })
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public AuthToken login(@RequestBody User user) throws Exception {
-        if(user == null || user.getUsername() == null || user.getPassword() == null) {
+        if(user == null || !StringUtils.hasLength(user.getUsername()) || !StringUtils.hasLength(user.getPassword())) {
             throw new UserLoginException(ErrorCode.LOGIN_BAD_REQUEST);
         }
         return userService.userLogin(user.getUsername(), user.getPassword());
     }
-
-
 
     @ApiOperation(value = "토큰 재발급 요청", response = AuthToken.class)
     @ApiResponses(value = {
@@ -51,8 +49,6 @@ public class UserController {
         }
         return userService.refresh(authToken);
     }
-
-
 
     @ApiOperation(value = "로그아웃, 토큰 삭제")
     @ApiImplicitParam(name = "jwt", value = "refresh 토큰", required = true, dataType = "string", paramType = "header")
