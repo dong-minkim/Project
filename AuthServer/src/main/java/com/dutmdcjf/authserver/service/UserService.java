@@ -1,5 +1,6 @@
 package com.dutmdcjf.authserver.service;
 
+import com.dutmdcjf.authserver.common.Encrypt;
 import com.dutmdcjf.authserver.common.StringDefiner;
 import com.dutmdcjf.authserver.dto.mapper.UserMapper;
 import com.dutmdcjf.authserver.exception.UserLoginException;
@@ -37,13 +38,9 @@ public class UserService {
     private final RedisService redisService;
     private final ObjectMapper objectMapper;
 
-
-    /*
-     * Login
-     * */
     public AuthToken userLogin(String username, String password) throws Exception {
         Map<String, Object> userLoginData;
-        userLoginData = userMapper.getUserByLoginData(username, encryptBySha256(password));
+        userLoginData = userMapper.getUserByLoginData(username, new Encrypt().encryptBySha256(password));
         if (userLoginData == null) {
             throw new UserLoginException(ErrorCode.NOT_FOUND_USER);
         }
@@ -59,18 +56,6 @@ public class UserService {
         return new AuthToken(accessToken, refreshToken);
     }
 
-    private String encryptBySha256(String password) throws NoSuchAlgorithmException {
-
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
-        md.update(password.getBytes());
-        String encryptPassword = String.format("%064x", new BigInteger(1, md.digest()));
-
-        return encryptPassword;
-    }
-
-    /*
-     * refresh
-     * */
     public AuthToken refresh(AuthToken authToken) throws Exception {
         String newAccessToken = null;
 
@@ -114,7 +99,6 @@ public class UserService {
     }
 
     /*
-     * logout
      * HTTP Header로 refreshToken을 받는다.
      * */
     public void logout(HttpServletRequest request) {
