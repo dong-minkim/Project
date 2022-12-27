@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dutmdcjf.backendserver.dao.mapper.CategoriesMapper">
+    <select id="getCategories" resultType="com.dutmdcjf.backendserver.model.Categories.Menus">
+        SELECT  id AS cate1Id,
+                CASE WHEN length(description) > 14 THEN CONCAT(substr(description, 1, 14), '...')
+                ELSE description END AS cateName,
+                description AS cateName2
+        FROM cate1
+        WHERE display = 'Y'
+        ORDER BY junbang
+    </select>
+
+    <select id="getSubCategories" resultType="com.dutmdcjf.backendserver.model.Categories.Menus">
+        SELECT  id AS cate2Id,
+                big_id AS cate1Id,
+                description AS cateName
+        FROM cate2
+        WHERE display = 'Y'
+        ORDER BY junbang
+    </select>
+</mapper>
