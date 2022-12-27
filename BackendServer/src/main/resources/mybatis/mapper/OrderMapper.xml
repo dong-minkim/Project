@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dutmdcjf.backendserver.dao.mapper.OrderMapper">
+
+    <select id="getOrderHistory" resultType="com.dutmdcjf.backendserver.model.Order">
+        <![CDATA[
+            SELECT  TMP.order_id AS orderIdx,
+                    TMP.customer_id AS accountIdx,
+                    TMP.complete_date AS completeDate,
+                    TMP.checkout_date AS checkoutDate,
+                    TMP.order_status AS orderStatus,
+                    TMP.pur_id AS purId,
+                    TMP.inv_no AS invNo,
+                    TMP.issue_date AS issueDate,
+                    TMP.date,
+                    TMP.message,
+                    TMP.remark,
+                    TMP.done,
+                    COUNT(TMP.products_id) AS itemCnt,
+                    SUM(TMP.amount) AS totalAmount
+            FROM (
+                SELECT  A.order_id,
+                        A.customer_id,
+                        A.complete_date,
+                        A.checkout_date,
+                        A.order_status,
+                        A.pur_id,
+                        A.inv_no,
+                        A.issue_date,
+                        A.date,
+                        A.message,
+                        A.remark,
+                        A.done,
+                        A.old_id,
+                        B.products_id,
+                        SUM(B.quantity) AS quantity,
+                        SUM(B.inApack) AS inApack,
+                        SUM(B.price) AS price,
+                        SUM(B.quantity) * SUM(B.inApack) * SUM(B.price) AS amount
+                FROM orders A
+                INNER JOIN order_items B ON A.customer_id = B.customer_id
+                AND B.order_id = A.order_id
+                WHERE A.customer_id = #{accountIdx}
+                AND A.order_status < 4
+                GROUP BY    A.order_id,
+                            A.customer_id,
+                            A.complete_date,
+                            A.checkout_date,
+                            A.order_status,
+                            A.pur_id,
+                            A.inv_no,
+                            A.issue_date,
+                            A.date,
+                            A.message,
+                            A.remark,
+                            A.done,
+                            A.old_id,
+                            B.products_id
+            ) TMP
+            GROUP BY    TMP.order_id,
+                        TMP.customer_id,
+                        TMP.complete_date,
+                        TMP.checkout_date,
+                        TMP.order_status,
+                        TMP.pur_id,
+                        TMP.inv_no,
+                        TMP.issue_date,
+                        TMP.date,
+                        TMP.message,
+                        TMP.remark,
+                        TMP.done,
+                        TMP.old_id
+            ORDER BY order_id DESC
+            LIMIT 30
+        ]]>
+    </select>
+
+    <select id="getOrderInvoiceList" resultType="com.dutmdcjf.backendserver.model.Invoice">
+        SELECT id, date, due_date, total_amount, payment_amount, payment_date, status
+        FROM sales
+        WHERE customer_id = #{accountIdx}
+        <if test="status != null">
+        AND status = #{status}
+        </if>
+        <if test="start_date != null and end_date != null">
+        AND date BETWEEN #{start_date} AND #{end_date}
+        </if>
+        ORDER BY id DESC
+    </select>
+
+    <select id="getOrderInvoiceList99" resultType="com.dutmdcjf.backendserver.model.Invoice">
+        SELECT id, date, due_date, total_amount, payment_amount, payment_date, status
+        FROM sales
+        WHERE customer_id = #{accountIdx}
+        AND   status > 6
+        <if test="start_date != null and end_date != null">
+            AND date BETWEEN #{startDate} AND #{endDate}
+        </if>
+        ORDER BY id DESC
+    </select>
+
+</mapper>
