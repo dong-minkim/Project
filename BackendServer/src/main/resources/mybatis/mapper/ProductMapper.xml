@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dutmdcjf.backendserver.dao.mapper.ProductMapper">
+
+    <select id="getCategoryListCount" resultType="Integer">
+        SELECT COUNT(p.products_id) AS total
+        FROM products as p
+        WHERE p.cate1 = #{cate1}
+        AND p.products_quantity > 0
+    </select>
+
+    <select id="getCategoryItemList" resultType="com.dutmdcjf.backendserver.model.Product.Product">
+        SELECT  p.products_id,
+                p.products_price,
+                p.products_quantity,
+                p.retail_price,
+                p.cat_code,
+                p.inApack,
+                p.products_disc,
+                1 AS buy_count,
+                p.cate1,
+                p.cate2,
+                p.cate3,
+                pd.products_name,
+                pd.products_description
+        FROM products as p, products_description as pd
+        WHERE p.products_id = pd.products_id
+        AND p.cate1 = #{cate1}
+        AND p.products_quantity > 0
+        ORDER BY p.cat_code ASC
+        LIMIT #{page}, #{count}
+    </select>
+
+    <select id="getSubCategoryListCount" resultType="Integer">
+        SELECT COUNT(p.products_id) AS total
+        FROM products as p
+        WHERE p.cate1 = #{cate1}
+        AND p.cate2 = #{cate2}
+        AND p.products_quantity > 0
+    </select>
+
+    <select id="getSubCategoryItemList" resultType="com.dutmdcjf.backendserver.model.Product.Product">
+        SELECT  p.products_id,
+                p.products_price,
+                p.products_quantity,
+                p.retail_price,
+                p.cat_code,
+                p.inApack,
+                p.products_disc,
+                1 AS buy_count,
+                p.cate1,
+                p.cate2,
+                p.cate3,
+                pd.products_name, pd.products_description
+        FROM products as p, products_description as pd
+        WHERE p.products_id = pd.products_id
+        AND p.cate1 = #{cate1}
+        AND p.cate2 = #{cate2}
+        AND p.products_quantity > 0
+        ORDER BY p.cat_code ASC
+        LIMIT #{page}, #{count}
+    </select>
+
+    <select id="getProductItemListCount" resultType="Integer">
+        SELECT COUNT(*) AS total
+        FROM products AS p
+    </select>
+
+    <select id="getProductItemList" resultType="com.dutmdcjf.backendserver.model.Product.Product">
+        SELECT  p.products_id,
+                p.products_price,
+                p.products_quantity,
+                p.retail_price,
+                p.cat_code,
+                p.inApack,
+                p.products_disc,
+                1 AS buy_count,
+                p.cate1,
+                p.cate2,
+                p.cate3,
+                pd.products_name,
+                pd.products_description
+        FROM products as p, products_description as pd
+        WHERE p.products_id = pd.products_id
+        AND p.products_quantity > 0
+        ORDER BY p.cat_code ASC
+        LIMIT #{page}, #{count}
+    </select>
+
+    <select id="getProductSearchCount" resultType="Integer">
+        SELECT COUNT(p.products_id) AS total
+        FROM products as p, products_description AS pd
+        WHERE p.products_id = pd.products_id
+        AND (pd.products_name LIKE #{searchProduct} OR p.products_model LIKE #{searchProduct} OR p.cat_code LIKE #{searchProduct})
+    </select>
+
+    <select id="getProductSearchItemList" resultType="com.dutmdcjf.backendserver.model.Product.Product">
+        SELECT  p.products_id,
+                p.products_price,
+                p.products_quantity,
+                p.retail_price,
+                p.cat_code,
+                p.inApack,
+                p.products_disc,
+                1 AS buy_count,
+                p.cate1,
+                p.cate2,
+                p.cate3,
+                pd.products_name,
+                pd.products_description
+        FROM products AS p, products_description AS pd
+        WHERE  p.products_id = pd.products_id
+        AND (pd.products_name LIKE #{searchProduct} OR p.products_model LIKE #{searchProduct} OR p.cat_code LIKE #{searchProduct})
+        ORDER BY p.cat_code ASC
+        LIMIT #{page}, #{count}
+    </select>
+
+</mapper>
