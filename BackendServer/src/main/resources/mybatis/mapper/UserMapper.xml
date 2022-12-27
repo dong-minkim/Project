@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dutmdcjf.backendserver.dao.mapper.UserMapper">
+
+    <select id="getUserDetail" resultType="com.dutmdcjf.backendserver.model.Users.UserInfoDetail">
+        SELECT  company,
+                lastname,
+                firstname,
+                email,
+                address1,
+                address2,
+                city,
+                discount,
+                password,
+                idx
+        FROM cus
+        WHERE idx = #{accountIdx}
+    </select>
+
+    <update id="setUserPassword">
+        UPDATE cus
+        SET password = #{newpassword}
+        WHERE idx = #{accountIdx}
+    </update>
+
+</mapper>
