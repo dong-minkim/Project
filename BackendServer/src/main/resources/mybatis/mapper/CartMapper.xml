@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dutmdcjf.backendserver.dao.mapper.CartMapper">
+
+    <select id="getFindOrder" resultType="Long">
+        SELECT order_id
+        FROM orders
+        WHERE `customer_id`= #{accountIdx}
+        AND `order_status`= '1'
+        LIMIT 1
+    </select>
+
+    <select id="getCartItemsCnt" resultType="Integer">
+        SELECT COUNT(id) AS items_cnt
+        FROM order_items
+        WHERE order_id = #{orderIdx}
+        AND customer_id= #{accountIdx}
+    </select>
+
+    <select id="getCartTotalPrice" resultType="BigDecimal">
+        <![CDATA[
+            SELECT SUM(TMP.price) AS total_price
+            FROM (
+                SELECT SUM(B.quantity) * SUM(B.inApack) * SUM(B.price) AS price
+                FROM orders A
+                LEFT JOIN order_items B ON A.customer_id = B.customer_id AND B.order_id = A.order_id
+                WHERE A.customer_id = #{accountIdx}
+                AND   A.order_id = #{orderIdx}
+                AND   A.order_status < 4
+                GROUP BY  A.order_id  , A.customer_id , B.products_id
+            ) TMP
+        ]]>
+    </select>
+
+    <select id="getCartItemList" resultType="com.dutmdcjf.backendserver.model.Product.Product">
+        <![CDATA[
+            SELECT  B.id AS idx,
+                    B.customer_id AS customerId,
+                    B.order_id AS orderId,
+                    B.price,
+                    B.quantity AS productsQuantity,
+                    B.inApack,
+                    B.order_date AS orderDate,
+                    B.OX,
+                    B.pur_id AS purId,
+                    p.products_id AS productsId,
+                    p.products_price AS productsPrice,
+                    p.retail_price AS retailPrice,
+                    p.cat_code AS catCode,
+                    p.inApack,
+                    p.products_disc AS productsDisc,
+                    p.cate1,
+                    p.cate2,
+                    p.cate3,
+                    pd.products_name AS productsName,
+                    pd.products_description AS productsDescription
+            FROM orders A
+                INNER JOIN order_items B ON A.customer_id = B.customer_id AND B.order_id = A.order_id
+                LEFT JOIN  products p ON p.products_id = B.products_id
+                LEFT JOIN  products_description pd ON pd.products_id = B.products_id
+            WHERE A.customer_id = #{accountIdx}
+            AND   A.order_id = #{orderIdx}
+            AND   A.order_status < 4
+            GROUP BY    A.order_id,
+                        A.customer_id,
+                        A.complete_date,
+                        A.order_status,
+                        A.pur_id,
+                        A.inv_no,
+                        A.issue_date,
+                        A.date,
+                        A.message,
+                        A.remark,
+                        A.done,
+                        A.old_id,
+                        B.products_id
+            ORDER BY p.cat_code
+        ]]>
+    </select>
+
+    <select id="getLastOrder" resultType="com.dutmdcjf.backendserver.model.Order">
+        SELECT *
+        FROM orders
+        WHERE customer_id = #{accountIdx}
+        AND order_status = '1'
+        LIMIT 1
+    </select>
+
+    <select id="getOrderItem" resultType="com.dutmdcjf.backendserver.model.OrderItem">
+        SELECT id, products_id, quantity
+        FROM order_items
+        WHERE products_id = #{productIdx}
+        AND order_id = #{orderIdx}
+    </select>
+
+    <insert id="createCart" useGeneratedKeys="true" keyProperty="order_id">
+        INSERT INTO `orders` (`customer_id` , `issue_date` , `complete_date` , `order_status` )
+        VALUES (#{accountIdx}, now(), '0000-00-00', '1')
+
+        <selectKey keyProperty="order_id" resultType="Long" order="BEFORE">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <insert id="createOrderItem">
+        INSERT INTO `order_items` (`customer_id` , `order_id` , `products_id` , `price`, `quantity` , `inApack` , `order_date` )
+        VALUES (#{accountIdx}, #{orderId}, #{itemId}, #{price}, #{quantity}, #{inApack}, now())
+    </insert>
+
+    <update id="updateCartItem">
+        UPDATE order_items
+            SET quantity = #{quantity}
+        WHERE id = #{itemId}
+        AND customer_id = #{accountIdx}
+    </update>
+
+    <delete id="deleteItem">
+        DELETE FROM order_items
+        WHERE id = #{itemId}
+        AND customer_id = #{accountIdx}
+    </delete>
+
+</mapper>
