@@ -1,10 +1,10 @@
-# 🛒 OO Mart
+# 🛒 Delivery-Market
 
 ### 👨‍👦‍👦 Members
 
 | 이름 | 역할 |
 | ----- | ----- |
-| 추연준 | FrontendServer의 vue.js |
+|  | FrontendServer의 vue.js |
 | 김동민 |BacnendServer <br> AuthServer <br> AdminServer|
 
 
@@ -12,13 +12,13 @@
 - Java 11
 - IDE: IntelliJ
 - Framework: SpringBoot
-- Database: MariaDB
-- ORM: JPA(BackEndServer), Mybatis(AuthServer)
+- Database: MariaDB, Redis
+- ORM: JPA(AdminServer), Mybatis(AuthServer, BackendServer)
 
 <br>
 
 ## ❓ OO Mart 소개
-###💡 기획의도
+### 💡 기획의도
 - 배운 것을 적용시키기 위해
 
 ### 📌 주요 기능
