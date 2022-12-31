@@ -19,13 +19,13 @@ public class PromotionController {
 
     @NonAuth
     @GetMapping("/main")
-    public PromotionMain getMainPromotion() {
+    public PromotionMain getMainPromotion() throws Exception {
         return promotionService.getMainPromotion();
     }
 
     @NonAuth
     @GetMapping("/service")
-    public PromotionList getServicePromotion() {
+    public PromotionList getServicePromotion() throws Exception {
         return promotionService.getServicePromotion();
     }
 }
