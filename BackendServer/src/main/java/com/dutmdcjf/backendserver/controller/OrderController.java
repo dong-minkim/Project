@@ -1,7 +1,7 @@
 package com.dutmdcjf.backendserver.controller;
 
 import com.dutmdcjf.backendserver.annotation.NonAuth;
-import com.dutmdcjf.backendserver.model.*;
+import com.dutmdcjf.backendserver.model.Order.OrderInvoice;
 import com.dutmdcjf.backendserver.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

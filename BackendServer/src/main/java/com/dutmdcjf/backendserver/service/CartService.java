@@ -2,9 +2,9 @@ package com.dutmdcjf.backendserver.service;
 
 import com.dutmdcjf.backendserver.dao.mapper.CartMapper;
 import com.dutmdcjf.backendserver.model.Cart.CartItem;
-import com.dutmdcjf.backendserver.model.CartList;
-import com.dutmdcjf.backendserver.model.Order;
-import com.dutmdcjf.backendserver.model.OrderItem;
+import com.dutmdcjf.backendserver.model.Order.CartList;
+import com.dutmdcjf.backendserver.model.Order.Order;
+import com.dutmdcjf.backendserver.model.Order.OrderItem;
 import com.dutmdcjf.backendserver.model.Product.Product;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

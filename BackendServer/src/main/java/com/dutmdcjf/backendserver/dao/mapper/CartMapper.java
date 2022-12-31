@@ -1,7 +1,7 @@
 package com.dutmdcjf.backendserver.dao.mapper;
 
-import com.dutmdcjf.backendserver.model.Order;
-import com.dutmdcjf.backendserver.model.OrderItem;
+import com.dutmdcjf.backendserver.model.Order.Order;
+import com.dutmdcjf.backendserver.model.Order.OrderItem;
 import com.dutmdcjf.backendserver.model.Product.Product;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

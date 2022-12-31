@@ -1,4 +1,4 @@
-package com.dutmdcjf.backendserver.model;
+package com.dutmdcjf.backendserver.model.Order;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

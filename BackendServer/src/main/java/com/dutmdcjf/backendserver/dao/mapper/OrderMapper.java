@@ -1,7 +1,7 @@
 package com.dutmdcjf.backendserver.dao.mapper;
 
-import com.dutmdcjf.backendserver.model.Invoice;
-import com.dutmdcjf.backendserver.model.Order;
+import com.dutmdcjf.backendserver.model.Order.Invoice;
+import com.dutmdcjf.backendserver.model.Order.Order;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;

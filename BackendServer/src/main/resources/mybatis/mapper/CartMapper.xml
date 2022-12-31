@@ -78,7 +78,7 @@
         ]]>
     </select>
 
-    <select id="getLastOrder" resultType="com.dutmdcjf.backendserver.model.Order">
+    <select id="getLastOrder" resultType="com.dutmdcjf.backendserver.model.Order.Order">
         SELECT *
         FROM orders
         WHERE customer_id = #{accountIdx}
@@ -86,7 +86,7 @@
         LIMIT 1
     </select>
 
-    <select id="getOrderItem" resultType="com.dutmdcjf.backendserver.model.OrderItem">
+    <select id="getOrderItem" resultType="com.dutmdcjf.backendserver.model.Order.OrderItem">
         SELECT id, products_id, quantity
         FROM order_items
         WHERE products_id = #{productIdx}

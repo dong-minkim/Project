@@ -1,9 +1,9 @@
 package com.dutmdcjf.backendserver.service;
 
 import com.dutmdcjf.backendserver.dao.mapper.OrderMapper;
-import com.dutmdcjf.backendserver.model.Invoice;
-import com.dutmdcjf.backendserver.model.Order;
-import com.dutmdcjf.backendserver.model.OrderInvoice;
+import com.dutmdcjf.backendserver.model.Order.Invoice;
+import com.dutmdcjf.backendserver.model.Order.Order;
+import com.dutmdcjf.backendserver.model.Order.OrderInvoice;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

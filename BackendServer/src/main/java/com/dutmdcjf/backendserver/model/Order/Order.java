@@ -1,4 +1,4 @@
-package com.dutmdcjf.backendserver.model;
+package com.dutmdcjf.backendserver.model.Order;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
