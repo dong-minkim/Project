@@ -10,6 +10,5 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PromotionList {
-    List<Container> container;
     List<TabDefine> promotion;
 }

@@ -11,9 +11,8 @@ public class Promotion {
     Integer cols;
     String title;
     String description;
-    Integer bigmenu;
-    String bigmenuName;
-    Integer smallmenu;
     String url;
+    Integer bigMenu;
+    Integer smallMenu;
     String image;
 }

@@ -10,7 +10,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PromotionMain {
-    List<ContainerText> container;
     String event;
     List<String> rolling;
 }
